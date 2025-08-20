@@ -23,9 +23,12 @@ Global-AI-Hub/
         ├── services/            # İş mantığı (LibraryService)
         │   └── library_service.py
         ├── tests/              # Birim testleri
-        │   └── test_library_service.py
-        ├── main.py             # CLI uygulaması
-        └── requirements.txt    # Python bağımlılıkları
+        │   ├── test_library_service.py
+        │   └── test_api.py
+        ├── main.py             # CLI uygulaması (Aşama 1-2)
+        ├── api.py              # FastAPI web servisi (Aşama 3)
+        ├── requirements.txt    # Python bağımlılıkları
+        └── .gitignore          # Git ignore dosyası
 ```
 
 ## Kurulum
@@ -97,24 +100,40 @@ python main.py
 Notlar:
 - İnternet bağlantısı gereklidir.
 - Open Library API yoğun kullanımda tanımlı bir User-Agent bekleyebilir.
-## Testler (Tüm Aşamalar)
 
-Tüm testleri çalıştırın:
+### Aşama 3: FastAPI Web Servisi
+
+1. API'yi başlatın:
 ```bash
-uv run python -m pytest tests/ -v
+uv run uvicorn api:app --reload
+```
+2. Dokümantasyon:
+- Swagger UI: http://127.0.0.1:8000/docs
+- ReDoc: http://127.0.0.1:8000/redoc
+
+3. Örnek istekler:
+- GET /books
+- POST /books  Body: {"isbn": "9780441172719"}
+- DELETE /books/{isbn}
+
+#### cURL örnekleri
+
+- GET /books
+```bash
+curl -s http://127.0.0.1:8000/books
 ```
 
-Yalnız Aşama 1-2 testleri:
+- POST /books
 ```bash
-uv run python -m pytest tests/test_library_service.py -v
+curl -s -X POST http://127.0.0.1:8000/books \
+  -H "Content-Type: application/json" \
+  -d '{"isbn":"9780441172719"}'
 ```
 
-Yalnız Aşama 3 testleri:
+- DELETE /books/{isbn}
 ```bash
-uv run python -m pytest tests/test_api.py -v
+curl -i -X DELETE http://127.0.0.1:8000/books/9780441172719
 ```
-
- 
 
 ## Teknik Özellikler
 
@@ -151,61 +170,30 @@ uv run python -m pytest tests/test_api.py -v
 - [x] Open Library Books API entegrasyonu (httpx)
 - [x] ISBN ile otomatik kitap bilgisi çekme (title, authors)
 - [x] Hata yönetimi (404, ağ/HTTP, JSON)
-- [x] Mock’lu birim testleri (başarı, 404, network senaryoları)
+- [x] Mock'lu birim testleri (başarı, 404, network senaryoları)
 
-### Aşama 3: FastAPI Web Servisi (Yakında)
+### Aşama 3: FastAPI Web Servisi
 - [x] FastAPI endpoint'leri (GET /books, POST /books, DELETE /books/{isbn})
 - [x] Pydantic modelleri
 - [x] Otomatik dokümantasyon (/docs)
 - [x] API testleri
 
-## Aşama 3 Kullanım (FastAPI)
+## Testler
 
-1. Bağımlılıkları kurun:
+Tüm testleri çalıştırın:
 ```bash
-uv pip install -r requirements.txt
+uv run python -m pytest tests/ -v
 ```
-2. API’yi başlatın:
+
+Yalnız Aşama 1-2 testleri:
 ```bash
-uv run uvicorn api:app --reload
+uv run python -m pytest tests/test_library_service.py -v
 ```
-3. Dokümantasyon:
-- Swagger UI: http://127.0.0.1:8000/docs
-- ReDoc: http://127.0.0.1:8000/redoc
 
-4. Örnek istekler:
-- GET /books
-- POST /books  Body: {"isbn": "9780441172719"}
-- DELETE /books/{isbn}
-
-#### cURL örnekleri
-
-- GET /books
+Yalnız Aşama 3 testleri:
 ```bash
-curl -s http://127.0.0.1:8000/books
+uv run python -m pytest tests/test_api.py -v
 ```
-
-- POST /books
-```bash
-curl -s -X POST http://127.0.0.1:8000/books \
-  -H "Content-Type: application/json" \
-  -d '{"isbn":"9780441172719"}'
-```
-
-- DELETE /books/{isbn}
-```bash
-curl -i -X DELETE http://127.0.0.1:8000/books/9780441172719
-```
-
-#### Python httpx ile örnek (isteğe bağlı)
-```python
-import httpx
-
-with httpx.Client() as c:
-    r = c.post("http://127.0.0.1:8000/books", json={"isbn": "9780441172719"})
-    print(r.status_code, r.json())
-```
-
 
 ## Geliştirme
 
