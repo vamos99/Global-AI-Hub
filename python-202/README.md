@@ -34,7 +34,7 @@ Global-AI-Hub/
 - **Python 3.13+**
 - **UV paket yöneticisi** (modern ve hızlı)
 
-### Kurulum Adımları
+### Kurulum Adımları (UV ile)
 
 1. **Projeyi klonlayın:**
 ```bash
@@ -53,7 +53,19 @@ source .venv/bin/activate
 uv pip install -r requirements.txt
 ```
 
-## Kullanım
+### Alternatif (pip ile)
+
+1. Sanal ortam oluşturun ve aktive edin:
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+2. Bağımlılıkları kurun:
+```bash
+pip install -r requirements.txt
+```
+
+## Kullanım (Aşama 1 → Aşama 2 → Aşama 3)
 
 ### Aşama 1: CLI Uygulaması
 
@@ -63,7 +75,7 @@ python main.py
 ```
 
 **Menü Seçenekleri:**
-- `1` - Kitap Ekle (Aşama 2 ile ISBN ile otomatik ekleme)
+- `1` - Kitap Ekle (Aşama 2’de ISBN ile otomatik ekleme)
 - `2` - Kitap Sil (ISBN ile)
 - `3` - Kitapları Listele
 - `4` - Kitap Ara (ISBN ile)
@@ -73,19 +85,36 @@ python main.py
 
 **ISBN Validasyonu:** 10 veya 13 haneli ISBN formatı kontrol edilir.
 
-### Testler
+### Aşama 2: ISBN ile Otomatik Ekleme (CLI)
 
-Birim testlerini çalıştırmak için:
+1. Uygulamayı çalıştırın:
+```bash
+python main.py
+```
+2. `1` seçeneğini girin ve yalnızca ISBN yazın (ör: `9780441172719`).
+3. Başarılıysa `library.json` güncellenir, `3` ile listeleyebilirsiniz.
+
+Notlar:
+- İnternet bağlantısı gereklidir.
+- Open Library API yoğun kullanımda tanımlı bir User-Agent bekleyebilir.
+## Testler (Tüm Aşamalar)
+
+Tüm testleri çalıştırın:
 ```bash
 uv run python -m pytest tests/ -v
 ```
 
-**Test Kapsamı:**
-- Book sınıfı testleri
-- LibraryService metodları
-- JSON dosya işlemleri
-- ISBN validasyon testleri
-- Hata durumları
+Yalnız Aşama 1-2 testleri:
+```bash
+uv run python -m pytest tests/test_library_service.py -v
+```
+
+Yalnız Aşama 3 testleri:
+```bash
+uv run python -m pytest tests/test_api.py -v
+```
+
+ 
 
 ## Teknik Özellikler
 
@@ -125,23 +154,58 @@ uv run python -m pytest tests/ -v
 - [x] Mock’lu birim testleri (başarı, 404, network senaryoları)
 
 ### Aşama 3: FastAPI Web Servisi (Yakında)
-- [ ] FastAPI endpoint'leri (GET /books, POST /books, DELETE /books/{isbn})
-- [ ] Pydantic modelleri
-- [ ] Otomatik dokümantasyon (/docs)
-- [ ] API testleri
+- [x] FastAPI endpoint'leri (GET /books, POST /books, DELETE /books/{isbn})
+- [x] Pydantic modelleri
+- [x] Otomatik dokümantasyon (/docs)
+- [x] API testleri
 
-## Aşama 2 Kullanım (ISBN ile Otomatik Ekleme)
+## Aşama 3 Kullanım (FastAPI)
 
-1. Uygulamayı çalıştırın:
+1. Bağımlılıkları kurun:
 ```bash
-python main.py
+uv pip install -r requirements.txt
 ```
-2. Menüden `1` seçin ve yalnızca ISBN girin (örnek: `9780441172719`).
-3. Başarılıysa kitap otomatik eklenecek; `3` ile listeleyebilirsiniz.
+2. API’yi başlatın:
+```bash
+uv run uvicorn api:app --reload
+```
+3. Dokümantasyon:
+- Swagger UI: http://127.0.0.1:8000/docs
+- ReDoc: http://127.0.0.1:8000/redoc
 
-Notlar:
-- İnternet bağlantısı gereklidir.
-- Open Library API yoğun kullanımda tanımlı bir User-Agent bekleyebilir.
+4. Örnek istekler:
+- GET /books
+- POST /books  Body: {"isbn": "9780441172719"}
+- DELETE /books/{isbn}
+
+#### cURL örnekleri
+
+- GET /books
+```bash
+curl -s http://127.0.0.1:8000/books
+```
+
+- POST /books
+```bash
+curl -s -X POST http://127.0.0.1:8000/books \
+  -H "Content-Type: application/json" \
+  -d '{"isbn":"9780441172719"}'
+```
+
+- DELETE /books/{isbn}
+```bash
+curl -i -X DELETE http://127.0.0.1:8000/books/9780441172719
+```
+
+#### Python httpx ile örnek (isteğe bağlı)
+```python
+import httpx
+
+with httpx.Client() as c:
+    r = c.post("http://127.0.0.1:8000/books", json={"isbn": "9780441172719"})
+    print(r.status_code, r.json())
+```
+
 
 ## Geliştirme
 
