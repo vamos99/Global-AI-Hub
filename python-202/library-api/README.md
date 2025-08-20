@@ -63,7 +63,7 @@ python main.py
 ```
 
 **Menü Seçenekleri:**
-- `1` - Kitap Ekle (title, author, ISBN)
+- `1` - Kitap Ekle (Aşama 2 ile ISBN ile otomatik ekleme)
 - `2` - Kitap Sil (ISBN ile)
 - `3` - Kitapları Listele
 - `4` - Kitap Ara (ISBN ile)
@@ -77,15 +77,15 @@ python main.py
 
 Birim testlerini çalıştırmak için:
 ```bash
-python -m pytest tests/ -v
+uv run python -m pytest tests/ -v
 ```
 
 **Test Kapsamı:**
-- ✅ Book sınıfı testleri
-- ✅ LibraryService metodları
-- ✅ JSON dosya işlemleri
-- ✅ ISBN validasyon testleri
-- ✅ Hata durumları
+- Book sınıfı testleri
+- LibraryService metodları
+- JSON dosya işlemleri
+- ISBN validasyon testleri
+- Hata durumları
 
 ## Teknik Özellikler
 
@@ -93,13 +93,14 @@ python -m pytest tests/ -v
 - **Book Sınıfı:** Kitap verilerini temsil eder
   - `title`, `author`, `isbn` nitelikleri
   - `__str__()` metodu ile okunaklı gösterim ("Ulysses by James Joyce (ISBN: 978-0199535675)")
-  - `to_dict()` ve `from_dict()` metodları
+  - `to_dict()` ve `create_book_from_dict()` yardımcıları
   - ISBN format validasyonu
 
 - **LibraryService Sınıfı:** Kütüphane işlemlerini yönetir
-  - `add_book()`, `remove_book()`, `find_book()`
+  - `add_book(isbn)`, `add_book_by_isbn(isbn)`, `remove_book(isbn)`, `find_book(isbn)`
   - `list_books()`, `load_books()`, `save_books()`
   - JSON dosya entegrasyonu
+  - Open Library entegrasyonu için `httpx` kullanımı, User-Agent ve yönlendirme (follow_redirects) desteği
 
 ### Veri Yönetimi
 - **JSON Formatı:** İnsan okunabilir veri saklama
@@ -109,25 +110,38 @@ python -m pytest tests/ -v
 
 ## Geliştirme Aşamaları
 
-### ✅ Aşama 1: OOP ile CLI Uygulaması
-- [x] Book sınıfı oluşturuldu (title, author, ISBN)
-- [x] LibraryService sınıfı oluşturuldu
+### Aşama 1: OOP ile CLI Uygulaması
+- [x] Book sınıfı (title, author, ISBN)
+- [x] LibraryService
 - [x] CLI menü sistemi (1-5 seçenekler)
 - [x] JSON veri saklama (library.json)
 - [x] ISBN format validasyonu
-- [x] Kapsamlı birim testleri (pytest)
+- [x] Birim testleri (pytest)
 
-### 🔄 Aşama 2: Harici API Entegrasyonu (Yakında)
-- [ ] Open Library Books API entegrasyonu
-- [ ] ISBN ile otomatik kitap bilgisi çekme
-- [ ] httpx kütüphanesi kullanımı
-- [ ] Hata yönetimi ("Kitap bulunamadı.")
+### Aşama 2: Harici API Entegrasyonu
+- [x] Open Library Books API entegrasyonu (httpx)
+- [x] ISBN ile otomatik kitap bilgisi çekme (title, authors)
+- [x] Hata yönetimi (404, ağ/HTTP, JSON)
+- [x] Mock’lu birim testleri (başarı, 404, network senaryoları)
 
-### ⏳ Aşama 3: FastAPI Web Servisi (Yakında)
+### Aşama 3: FastAPI Web Servisi (Yakında)
 - [ ] FastAPI endpoint'leri (GET /books, POST /books, DELETE /books/{isbn})
 - [ ] Pydantic modelleri
 - [ ] Otomatik dokümantasyon (/docs)
 - [ ] API testleri
+
+## Aşama 2 Kullanım (ISBN ile Otomatik Ekleme)
+
+1. Uygulamayı çalıştırın:
+```bash
+python main.py
+```
+2. Menüden `1` seçin ve yalnızca ISBN girin (örnek: `9780441172719`).
+3. Başarılıysa kitap otomatik eklenecek; `3` ile listeleyebilirsiniz.
+
+Notlar:
+- İnternet bağlantısı gereklidir.
+- Open Library API yoğun kullanımda tanımlı bir User-Agent bekleyebilir.
 
 ## Geliştirme
 

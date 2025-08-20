@@ -24,11 +24,9 @@ class Book:
         if not clean_isbn[:-1].isdigit():
             return False
         
-        # ISBN-10: last character can be digit or 'X'
         if len(clean_isbn) == 10 and not (clean_isbn[-1].isdigit() or clean_isbn[-1].upper() == 'X'):
             return False
-        
-        # ISBN-13: last character must be digit
+
         if len(clean_isbn) == 13 and not clean_isbn[-1].isdigit():
             return False
         
