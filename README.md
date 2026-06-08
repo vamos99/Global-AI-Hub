@@ -1,60 +1,46 @@
-# Global AI Hub - Eğitim Projeleri
+# Global AI Hub Egitim Calismalari
 
-Bu repository, **Global AI Hub** eğitim programlarında geliştirilen projeleri içerir.
+Bu repo, Global AI Hub egitimleri sirasinda hazirlanan pratik calismalari
+toplar. Ana odak Python 202 kapsamindaki kucuk Library API projesidir.
 
-## Mevcut Eğitimler
+## Icerik
 
-### Python 202 Bootcamp
-- **Konum:** `python-202/`
-- **Açıklama:** Python 202 Bootcamp projeleri
-- **Projeler:**
-  - [Library API](./python-202/README.md) - Kütüphane yönetim sistemi
+| Klasor | Kapsam | Not |
+| --- | --- | --- |
+| `python-202/library-api/` | CLI + FastAPI kutuphane uygulamasi | OOP, harici API kullanimi, test yazimi |
 
-### Diğer Eğitimler
-- Daha fazla eğitim projesi eklenecek...
+## One Cikan Calisma
 
-## Teknolojiler
+`python-202/library-api/` klasoru ISBN ile kitap ekleme, JSON dosyasina
+kalici kayit tutma ve ayni is mantigini FastAPI endpointleriyle sunma
+akisini gosterir. Proje egitim amaclidir; production servisi gibi
+konumlandirilmamistir.
 
-Bu repository'de kullanılan teknolojiler:
-- **Python** - Ana programlama dili
-- **FastAPI** - Web API geliştirme
-- **Pytest** - Test framework
-- **UV** - Modern Python paket yöneticisi
-
-## Repository Yapısı
-
-```
-Global-AI-Hub/
-├── python-202/              # Python 202 Bootcamp projeleri
-│   └── library-api/         # Kütüphane API projesi
-├── diğer-eğitimler/         # Gelecekteki eğitimler
-└── README.md               # Bu dosya
-```
-
-## Başlangıç
-
-Her proje kendi README.md dosyasına sahiptir. İlgili proje klasörüne giderek detaylı bilgi alabilirsiniz.
-
-### Örnek: Library API Projesi
+## Calistirma
 
 ```bash
-# Tüm Global-AI-Hub repository'sini klonlayın
 git clone https://github.com/vamos99/Global-AI-Hub.git
-cd Global-AI-Hub/python-202
-# Proje README.md'sini okuyun
+cd Global-AI-Hub/python-202/library-api
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python main.py
 ```
 
-## Katkıda Bulunma
+API servisi icin:
 
-1. Fork yapın
-2. Feature branch oluşturun
-3. Değişikliklerinizi commit edin
-4. Pull Request oluşturun
+```bash
+uvicorn api:app --reload
+```
 
-## Lisans
+Testler:
 
-Bu projeler eğitim amaçlıdır.
+```bash
+python -m pytest tests -v
+```
 
-## İletişim
+## Notlar
 
-Sorularınız için GitHub Issues kullanabilirsiniz.
+- Bu repo egitim/odev arsivi niteligindedir.
+- API ornekleri Open Library gibi dis kaynaklara bagli oldugu icin internet
+  baglantisi gerektirebilir.
